@@ -24,3 +24,9 @@ less@2.7.12                    # Leaner CSS language
 meteortesting:mocha               # A package for writing and running your meteor app and package tests with mocha
 johanbrook:publication-collector  # Test a Meteor publication by collecting its output
 ethereum:web3
+ethereum:blocks
+ethereum:tools
+ethereum:dapp-styles
+ethereum:elements
+ethereum:accounts
+http

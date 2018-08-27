@@ -7,7 +7,14 @@
   },
   "dependencies": {
     "@babel/runtime": "7.0.0-beta.55",
-    "meteor-node-stubs": "^0.4.1"
+    "abi-decoder": "^1.2.0",
+    "canoe-solidity": "^0.1.0",
+    "etherest": "^0.1.0",
+    "ethereum-input-data-decoder": "0.0.12",
+    "meteor-node-stubs": "^0.4.1",
+    "node-gyp": "^3.8.0",
+    "npm": "^6.4.0",
+    "webpack": "^4.16.5"
   },
   "devDependencies": {
     "chai": "^4.1.2"
