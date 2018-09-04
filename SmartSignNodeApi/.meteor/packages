@@ -29,4 +29,5 @@ ethereum:tools
 ethereum:dapp-styles
 ethereum:elements
 ethereum:accounts
-http
+http@1.4.1
+nimble:restivus
