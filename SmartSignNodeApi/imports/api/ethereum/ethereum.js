@@ -3,27 +3,19 @@
 import InputDataDecoder from 'ethereum-input-data-decoder';
 import AbiDecoder from 'abi-decoder';
 import Web3 from 'web3';
+import stringHash from 'string-hash';
+
 // const Web3 = require('web3')
 // const AbiDecoder = require('abi-decoder');
 // const InputDataDecoder = require('ethereum-input-data-decoder');
 
-const abi =
-    [{
-        "constant": false, "inputs": [], "name": "changeStatus", "outputs":
-            [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "nonpayable", "type": "function"
-    },
-    {
-        "constant": false, "inputs": [{ "name": "_hash", "type": "string" }, { "name": "_csv", "type": "string" }],
-        "name": "setMap", "outputs": [{ "name": "", "type": "string" }, { "name": "", "type": "string" },
-        { "name": "", "type": "string" }], "payable": false, "stateMutability": "nonpayable", "type": "function"
-    },
-    { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }];
-const contractAddress = '0xDc23DC9B9E662839D4Cd11A0Be1a3a3ccD537Da3';
+const abi =[{"constant":false,"inputs":[],"name":"deprecate","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"tableRegisters","outputs":[{"name":"hashData","type":"int256"},{"name":"index","type":"uint256"},{"name":"codedData","type":"string"},{"name":"csv","type":"string"},{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_hashData","type":"int256"},{"name":"_codedData","type":"string"},{"name":"_csv","type":"string"},{"name":"_timestamp","type":"uint256"}],"name":"setNewRegister","outputs":[{"name":"","type":"int256"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"int256"}],"name":"mappingSignRegister","outputs":[{"name":"hashData","type":"int256"},{"name":"index","type":"uint256"},{"name":"codedData","type":"string"},{"name":"csv","type":"string"},{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"hashData","type":"int256"}],"name":"isRepeated","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"hashData","type":"int256"},{"name":"csv","type":"string"}],"name":"getRegister","outputs":[{"name":"","type":"int256"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
+const contractAddress = '0x1990091F0fD536938D49effd561C8F141Fdc5C87';
 
 if (Meteor.isServer) {
 
     console.log('Ethereum => Startup : Start');
-
+    
     if (typeof web3 !== 'undefined') {
         console.log('Startup => Default');
         web3 = new Web3(web3.currentProvider);
@@ -88,24 +80,30 @@ if (Meteor.isServer) {
         post: function () {
             try {
                 var contract = new web3.eth.Contract(abi, contractAddress);
-                console.log('postContractMethod => param test :', this.bodyParams);
+
+                var gasLimit = contract.methods
+                    .setNewRegister(stringHash(this.bodyParams.hash),this.bodyParams.hash, this.bodyParams.csv, Date.now())
+                    .estimateGas({from: '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3'})
+                    .await()
+
+                console.log('postContractMethod => gas Limit :', gasLimit);
 
                 var responseRecipe = contract.methods
-                    .setMap(this.bodyParams.hash, this.bodyParams.csv)
+                    .setNewRegister(stringHash(this.bodyParams.hash), this.bodyParams.hash, this.bodyParams.csv, Date.now())
                     .send({
                         from: '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3', // TODO : Change to cosnt
-                        gas: 150000, // TODO : Precalculate
-                        gasPrice: '300' // TODO : Precalculate
+                        gas: gasLimit, // TODO : Precalculate
+                        gasPrice: '1000000000' // TODO : Precalculate
                     }).await();
                 var responseData = contract.methods
-                    .setMap(this.bodyParams.hash, this.bodyParams.csv)
+                    .setNewRegister(stringHash(this.bodyParams.hash),this.bodyParams.hash, this.bodyParams.csv, Date.now())
                     .call({
                         from: '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3', // TODO : Change to cosnt
-                        gas: 150000, // TODO : Precalculate
-                        gasPrice: '300' // TODO : Precalculate
+                        gas: gasLimit, // TODO : Precalculate
+                        gasPrice: '1000000000' // TODO : Precalculate
                     }).await();
 
-                response = {responseData , responseRecipe}
+                response = { responseData, responseRecipe }
 
                 console.log('postContractMethod => response :', response);
                 return response;
