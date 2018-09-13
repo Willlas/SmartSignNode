@@ -1,14 +1,31 @@
 <template name="statusEth">
-    <!-- <h1> Testnet : Ropsten</h1> -->
-    <h1> Net : {{net}}</h1>
-    <!-- <h2> Last Block : {{currentBlock}} </h2> -->
-    <h2> Account address : {{accountAddress}}</h2>
-    <!-- {{#each value in account}}
-        
-        <h3>{{value.address}}</h3>
-        <h3>{{value.balance}}</h3>
-        <h3>{{value.name}}</h3>
-        <h3>{{value.type}}</h3>
-    {{/each}} -->
+    <div>
+        <h6> Provider : {{ provider }} - Account address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{accountAddress}}">
+                {{ accountAddress }} </a> - Contract address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{contractAddress}}#readContract">
+                {{ contractAddress }} </a></h6>
+    </div>
+
+
+    <div id="getTransaction">
+        <form class="transaction-Form">
+            <input type="text" name="transaction" placeholder="Paste your transaction here" />
+            <input type="submit">
+        </form>
+        <h2> Transaction : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{transactionUrl}}">
+                {{ transactionUrl }} </a></h2>
+        <table class="pure-table">
+            <tr>
+                <th> Unique Hash </th>
+                <th> Coded Data </th>
+                <th> CSV </th>
+                <th> Date </th>
+            </tr>
+            <tr>
+                {{ #each transaction }}
+                <td> {{ this }} </td>
+                {{ /each }}
+            </tr>
+        </table>
+    </div>
 
 </template>
