@@ -9,7 +9,7 @@ import stringHash from 'string-hash';
 const abi = [{ "constant": false, "inputs": [], "name": "deprecate", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "uint256" }], "name": "tableRegisters", "outputs": [{ "name": "hashData", "type": "int256" }, { "name": "index", "type": "uint256" }, { "name": "codedData", "type": "string" }, { "name": "csv", "type": "string" }, { "name": "timestamp", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_hashData", "type": "int256" }, { "name": "_codedData", "type": "string" }, { "name": "_csv", "type": "string" }, { "name": "_timestamp", "type": "uint256" }], "name": "setNewRegister", "outputs": [{ "name": "", "type": "int256" }, { "name": "", "type": "string" }, { "name": "", "type": "string" }, { "name": "", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "int256" }], "name": "mappingSignRegister", "outputs": [{ "name": "hashData", "type": "int256" }, { "name": "index", "type": "uint256" }, { "name": "codedData", "type": "string" }, { "name": "csv", "type": "string" }, { "name": "timestamp", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "hashData", "type": "int256" }], "name": "isRepeated", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "hashData", "type": "int256" }, { "name": "csv", "type": "string" }], "name": "getRegister", "outputs": [{ "name": "", "type": "int256" }, { "name": "", "type": "string" }, { "name": "", "type": "string" }, { "name": "", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }];
 const contractAddress = '0x1990091F0fD536938D49effd561C8F141Fdc5C87';
 const accountAddress = '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3';
-const gasPrice = '1000000000';
+const gasPrice = '2000000000';
 
 
 if (Meteor.isServer) {
@@ -92,6 +92,20 @@ if (Meteor.isServer) {
                 return err;
             }
         },
+        'getAllTransactions'(csv) {
+            try {
+                var result = [];
+                var transactions = hashDocument.find({ csv: csv }).fetch();
+                transactions.forEach(element => {
+                    result.push(Meteor.call('getTransaction', element.transactionAddress).inputs);
+                });
+                // console.log('getAllTransactions => result :', result);
+                console.log('getAllTransactions => transactions :', result);
+                return result;
+            } catch (err) {
+                console.log('getAllTransactions => err :', err);
+            }
+        },
         'getTransactionStatus'(txAddress) {
             try {
                 var transactionStatus = web3.eth.getTransactionReceipt(txAddress).await();
@@ -129,16 +143,6 @@ if (Meteor.isServer) {
 
 
                 result = { resultData, resultRecipe };
-                // if (smartContract.find({ transactionAddress: resultRecipe.transactionHash }).fetch().length == 0) {
-                //     console.log('Transaction Address not found');
-                //     var data = {
-                //         transactionAddress: resultRecipe.transactionHash,
-                //         contractAddress: contractAddress,
-                //         csv: resultData[2]
-                //     }
-                //     if (smartContract.schema.validate(data) == null) smartContract.insert(data);
-
-                // }
                 if (hashDocument.find({ codedData: resultData[1] }).fetch().length == 0 & resultData[1] != 'Repeated') {
                     console.log('Contract Address not found');
                     var data = {
@@ -159,7 +163,7 @@ if (Meteor.isServer) {
         },
         'postContractMethodMappingSignRegister'(hashData) {
             try {
-                contract.address = hashDocument.find({hashData : hashData}).fetch()[0].contractAddress;
+                contract.address = hashDocument.find({ hashData: hashData }).fetch()[0].contractAddress;
                 var gasLimit = contract.methods
                     .mappingSignRegister(hashData)
                     .estimateGas({ from: web3.eth.defaultAccount })
@@ -172,7 +176,13 @@ if (Meteor.isServer) {
                         gasPrice: gasPrice
                     }).await();
                 console.log('postContractMethodMappingSignRegister => result :', result);
-                return result;
+                return {
+                    csv : result.csv,
+                    codedData : result.codedData,
+                    hashData : result.hashData,
+                    index : result.index,
+                    timestamp : result.timestamp 
+                };
             } catch (err) {
                 console.log('postContractMethodMappingSignRegister => err :', err);
                 return err;
@@ -188,6 +198,20 @@ if (Meteor.isServer) {
             } catch (err) {
                 console.log('postContractMethodMappingSignRegisterByCodedData => result :', err);
                 return err
+            }
+        },
+        'postContractMethodMappingSignRegisterByCsv'(csv){
+            try{
+                var result = [];
+                var transactions = hashDocument.find({ csv: csv }).fetch();
+                transactions.forEach(element => {
+                    result.push(Meteor.call('postContractMethodMappingSignRegister', element.hashData));
+                });
+                console.log('postContractMethodMappingSignRegisterByCsv => result :', result);
+                return result;
+            }catch(err){
+                console.log('postContractMethodMappingSignRegisterByCsv => err :', err)
+                return err;
             }
         }
     });

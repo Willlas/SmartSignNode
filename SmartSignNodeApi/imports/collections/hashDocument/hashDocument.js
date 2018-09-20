@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor';
+    
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
@@ -15,7 +15,7 @@ hashDocument.schema = new SimpleSchema({
     },
     contractAddress: {
         type: String,
-        label:"contractAddress"
+        label: "contractAddress"
     },
     transactionAddress: {
         type: String,
@@ -27,18 +27,20 @@ hashDocument.schema = new SimpleSchema({
     }
 });
 
-export default hashDocument;
-
-if(Meteor.isServer){
-    Meteor.publish('hashDocument', function hashDocumentPublication(){
+if (Meteor.isServer) {
+    Meteor.publish('hashDocumentChannel', () => {
         return hashDocument.find();
     });
 }
 
 Meteor.methods({
-    'hashDocument.insert'(text){
+    'hashDocument.insert'(text) {
         check(text, String);
     }
 });
+
+export default hashDocument;
+
+
 
 // export const hashDocument = new Mongo.Collection('hashDocument');

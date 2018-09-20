@@ -1,0 +1,29 @@
+<template name="statusDBTransaction">
+    <div class="card-panel">
+        <h1 class="center-align"> Data Base Status </h1>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th> CSV </th>
+                    <th> Hash </th>
+                    <th> Transaction Address </th>
+                    <th> Data </th>
+                    <th> Contract Address </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each transactions}}
+                <tr>
+                    <td> {{this.csv}} </td>
+                    <td> {{this.hashData}} </td>
+                    <td> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{this.transactionAddress}}">{{this.transactionAddress}}</a>
+                    </td>
+                    <td> {{this.codedData}} </td>
+                    <td> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{this.contractAddress}}#readContract">{{this.contractAddress}}</a>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</template>

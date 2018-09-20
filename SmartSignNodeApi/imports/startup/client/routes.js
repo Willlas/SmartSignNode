@@ -15,10 +15,10 @@ FlowRouter.route('/', {
   }
 });
 
-FlowRouter.route('/home', {
+FlowRouter.route('/statusDbTransaction', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'hello'});
+    BlazeLayout.render('App_body', { main: 'statusDBTransaction'});
   }
 });
 

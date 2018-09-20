@@ -23,12 +23,12 @@ Template.statusEth.helpers({
         });
         return template.accountAddress.get();
     },
-    contractAddress : function(){
+    contractAddress: function () {
         var template = Template.instance();
         Meteor.call('getContractAddress', (err, result) => {
-            if(err){
+            if (err) {
                 console.log('getContractAddress => err :', err);
-            }else{
+            } else {
                 console.log('getContractAddress => result :', result);
                 template.contractAddress.set(result);
             }
@@ -38,7 +38,7 @@ Template.statusEth.helpers({
     provider: function () {
         var template = Template.instance()
         Meteor.call('getProvider', (err, result) => {
-            if(err){
+            if (err) {
                 console.log('getProvider => err :', err);
             } else {
                 console.log('getProvider => result :', result);
@@ -47,23 +47,23 @@ Template.statusEth.helpers({
         });
         return template.provider.get();
     },
-    transaction : function(){
+    transaction: function () {
         return Template.instance().transaction.get();
     },
-    transactionUrl : function(){
+    transactionUrl: function () {
         return Template.instance().transactionUrl.get();
     }
 });
 
 Template.statusEth.events({
-    'submit .transaction-Form' (event){
+    'submit .transaction-Form'(event) {
         event.preventDefault();
         var template = Template.instance();
         var transactionAddress = event.target.transaction.value;
-        Meteor.call('getTransaction',transactionAddress, (err, result) =>{
-            if(err){
+        Meteor.call('getTransaction', transactionAddress, (err, result) => {
+            if (err) {
                 console.log('getTransaction => err :', err);
-            }else{
+            } else {
                 console.log('getTransaction => result :', result);
                 template.transaction.set(result.inputs);
                 template.transactionUrl.set(transactionAddress);
