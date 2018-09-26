@@ -1,3 +1,21 @@
 <template name="App_body">
+  {{> Template.dynamic template=top}}
   {{> Template.dynamic template=main}}
+  {{> Template.dynamic template=footer}}
+</template>
+
+<template name="top">
+  <ul id="menu">
+    <li> <a href="/"> Home </a> </li>
+    <li> <a href="/statusDbTransaction"> Database status </a> </li>
+    <li> <a href="/swagger"> Swagger </a> </li>
+  </ul>
+</template>
+
+<template name="footer">
+  <footer id="footer">
+    <h6> Provider : {{ provider }} - Account address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{accountAddress}}">
+        {{ accountAddress }} </a> - Contract address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{contractAddress}}#readContract">
+        {{ contractAddress }} </a></h6>
+  </footer>
 </template>

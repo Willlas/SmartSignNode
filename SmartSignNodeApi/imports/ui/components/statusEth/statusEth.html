@@ -1,31 +1,25 @@
 <template name="statusEth">
-    <div>
-        <h6> Provider : {{ provider }} - Account address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{accountAddress}}">
-                {{ accountAddress }} </a> - Contract address : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{contractAddress}}#readContract">
-                {{ contractAddress }} </a></h6>
+    <div class="u-letter-box-xlarge">
+        <div class="o-container o-container--xlarge">
+            <form class="transaction-Form">
+                <input type="text" name="transaction" placeholder="Paste your transaction here" />
+                <input type="submit">
+            </form>
+            <h2> Transaction : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{transactionUrl}}">
+                    {{ transactionUrl }} </a></h2>
+            <table class="striped">
+                <tr>
+                    <th> Unique Hash </th>
+                    <th> Coded Data </th>
+                    <th> CSV </th>
+                    <th> Date </th>
+                </tr>
+                <tr>
+                    {{ #each transaction }}
+                    <td> {{ this }} </td>
+                    {{ /each }}
+                </tr>
+            </table>
+        </div>
     </div>
-
-
-    <div id="getTransaction">
-        <form class="transaction-Form">
-            <input type="text" name="transaction" placeholder="Paste your transaction here" />
-            <input type="submit">
-        </form>
-        <h2> Transaction : <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{transactionUrl}}">
-                {{ transactionUrl }} </a></h2>
-        <table class="striped">
-            <tr>
-                <th> Unique Hash </th>
-                <th> Coded Data </th>
-                <th> CSV </th>
-                <th> Date </th>
-            </tr>
-            <tr>
-                {{ #each transaction }}
-                <td> {{ this }} </td>
-                {{ /each }}
-            </tr>
-        </table>
-    </div>
-
 </template>

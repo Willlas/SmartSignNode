@@ -2,14 +2,17 @@
 // Just in case
 import InputDataDecoder from 'ethereum-input-data-decoder';
 import AbiDecoder from 'abi-decoder';
-import Web3 from 'web3';
+// import Web3 from 'web3';
+
+const Web3 = require('web3');
+
 import stringHash from 'string-hash';
 
 // Configuration const. TODO : file
 const abi =[{"constant":false,"inputs":[],"name":"deprecate","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"tableRegisters","outputs":[{"name":"hashData","type":"int256"},{"name":"index","type":"uint256"},{"name":"codedData","type":"string"},{"name":"csv","type":"string"},{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_hashData","type":"int256"},{"name":"_codedData","type":"string"},{"name":"_csv","type":"string"},{"name":"_timestamp","type":"uint256"}],"name":"setNewRegister","outputs":[{"name":"","type":"int256"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"int256"}],"name":"mappingSignRegister","outputs":[{"name":"hashData","type":"int256"},{"name":"index","type":"uint256"},{"name":"codedData","type":"string"},{"name":"csv","type":"string"},{"name":"timestamp","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"hashData","type":"int256"}],"name":"isRepeated","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"hashData","type":"int256"},{"name":"csv","type":"string"}],"name":"getRegister","outputs":[{"name":"","type":"int256"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 const contractAddress = '0x1990091F0fD536938D49effd561C8F141Fdc5C87';
 const accountAddress = '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3';
-const gasPrice = '1000000000';
+const gasPrice = '3000000000';
 
 if (Meteor.isServer) {
     

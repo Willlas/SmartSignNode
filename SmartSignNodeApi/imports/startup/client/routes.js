@@ -11,26 +11,26 @@ import '../../ui/pages/not-found/not-found.js';
 FlowRouter.route('/', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'App_home' });
+    BlazeLayout.render('App_body', { top: 'top', main: 'statusEth', footer: 'footer' });
   }
 });
 
 FlowRouter.route('/statusDbTransaction', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'statusDBTransaction'});
+    BlazeLayout.render('App_body', { top: 'top', main: 'statusDBTransaction' });
   }
 });
 
 FlowRouter.route('/swagger', {
   name: 'App.home',
   action() {
-    BlazeLayout.render('App_body', { main: 'swagger'});
+    BlazeLayout.render('App_body', { top: 'top', main: 'swagger' });
   }
 });
 
 FlowRouter.notFound = {
   action() {
-    BlazeLayout.render('App_body', { main: 'App_notFound' });
+    BlazeLayout.render('App_body', { top: 'top', main: 'App_notFound' });
   },
 };

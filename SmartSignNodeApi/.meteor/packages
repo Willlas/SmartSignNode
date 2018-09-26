@@ -33,4 +33,3 @@ http@1.4.1
 aldeed:simple-schema
 mrest:restivus-swagger
 mrest:restivus
-materialize:materialize

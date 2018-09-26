@@ -1,29 +1,31 @@
 <template name="statusDBTransaction">
-    <div class="card-panel">
-        <h1 class="center-align"> Data Base Status </h1>
-        <table class="striped">
-            <thead>
-                <tr>
-                    <th> CSV </th>
-                    <th> Hash </th>
-                    <th> Transaction Address </th>
-                    <th> Data </th>
-                    <th> Contract Address </th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each transactions}}
-                <tr>
-                    <td> {{this.csv}} </td>
-                    <td> {{this.hashData}} </td>
-                    <td> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{this.transactionAddress}}">{{this.transactionAddress}}</a>
-                    </td>
-                    <td> {{this.codedData}} </td>
-                    <td> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{this.contractAddress}}#readContract">{{this.contractAddress}}</a>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    <div class="u-letter-box-xlarge">
+        <div class="o-container o-container--xlarge">
+            <h1> Data Base Status </h1>
+            <table class="c-table c-table--striped">
+                <thead class="c-table__head">
+                    <tr class="c-table__row c-table__row--heading">
+                        <th class="c-table__cell"> CSV </th>
+                        <th class="c-table__cell"> Hash </th>
+                        <th class="c-table__cell"> Transaction Address </th>
+                        <th class="c-table__cell"> Data </th>
+                        <th class="c-table__cell"> Contract Address </th>
+                    </tr>
+                </thead>
+                <tbody class="c-table__body">
+                    {{#each transactions}}
+                    <tr class="c-table__row">
+                        <td class="c-table__cell"> {{this.csv}} </td>
+                        <td class="c-table__cell"> {{this.hashData}} </td>
+                        <td class="c-table__cell"> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/tx/{{this.transactionAddress}}">EtherScan</a>
+                        </td>
+                        <td class="c-table__cell"> {{this.codedData}} </td>
+                        <td class="c-table__cell"> <a target="_blank" rel="noopener noreferrer" href="https://ropsten.etherscan.io/address/{{this.contractAddress}}#readContract">EtherScan</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
