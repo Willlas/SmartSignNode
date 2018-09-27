@@ -9,6 +9,8 @@ import stringHash from 'string-hash';
 const abi = [{ "constant": false, "inputs": [], "name": "deprecate", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "uint256" }], "name": "tableRegisters", "outputs": [{ "name": "hashData", "type": "int256" }, { "name": "index", "type": "uint256" }, { "name": "codedData", "type": "string" }, { "name": "csv", "type": "string" }, { "name": "timestamp", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_hashData", "type": "int256" }, { "name": "_codedData", "type": "string" }, { "name": "_csv", "type": "string" }, { "name": "_timestamp", "type": "uint256" }], "name": "setNewRegister", "outputs": [{ "name": "", "type": "int256" }, { "name": "", "type": "string" }, { "name": "", "type": "string" }, { "name": "", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "int256" }], "name": "mappingSignRegister", "outputs": [{ "name": "hashData", "type": "int256" }, { "name": "index", "type": "uint256" }, { "name": "codedData", "type": "string" }, { "name": "csv", "type": "string" }, { "name": "timestamp", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "hashData", "type": "int256" }], "name": "isRepeated", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "hashData", "type": "int256" }, { "name": "csv", "type": "string" }], "name": "getRegister", "outputs": [{ "name": "", "type": "int256" }, { "name": "", "type": "string" }, { "name": "", "type": "string" }, { "name": "", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }];
 const contractAddress = '0x1990091F0fD536938D49effd561C8F141Fdc5C87';
 const accountAddress = '0x539dfa3584a7fd493c7a0383efcf17d40ee6dbb3';
+
+const privateKey = '0x49aef30b05c349e7fae959872ea35b725b44179172c5fedc8be67a59c7fdcf8d';
 const gasPrice = '3000000000';
 
 
@@ -26,7 +28,10 @@ if (Meteor.isServer) {
         web3 = new Web3(web3.currentProvider);
     } else {
         // The port and direction must be known before all of this, this is my own go etehreeum node
-        var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8085'));
+        // var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8085'));
+        // var web3 = new Web3(new Web3.providers.HttpProvider('http://10.16.15.220:8545'));
+        // var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+        var web3 = new Web3(new Web3.providers.HttpProvider('https://ropsten.infura.io:443'));
         console.log('Startup => Config');
     }
     console.log('Startup => web3 Version : ', web3.version);
@@ -34,14 +39,20 @@ if (Meteor.isServer) {
     console.log('Startup => web3 Current provider : ', web3.currentProvider);
 
     // Configuer the dealer account, in this case  im going to be the only dealer
-    web3.eth.defaultAccount = accountAddress;
-    console.log('Startup => Account : ', web3.eth.defaultAccount);
+    const account = web3.eth.accounts.privateKeyToAccount(privateKey);
+    console.log('Startup => Account from privateKey :', account)
+    web3.eth.defaultAccount = account.address;
+    // web3.eth.defaultAccount = accountAddress;
+    // console.log('Startup => Account : ', web3.eth.defaultAccount);
 
     // Decoder, this is for decode a transaction input, if you dont want to check the contracts (its free)
     AbiDecoder.addABI(abi);
     const decoder = new InputDataDecoder(abi);
 
     const contract = new web3.eth.Contract(abi, contractAddress);
+
+
+    console.log(web3.eth.personal)
     console.log('Ethereum => Startup : Done');
 
     // 
@@ -55,6 +66,7 @@ if (Meteor.isServer) {
                 return web3.eth.defaultAccount;
             } catch (err) {
                 console.log('getAccountAddress => err :', err);
+                return err;
             }
         },
         'getContractAddress'() {
@@ -64,6 +76,7 @@ if (Meteor.isServer) {
                 return response;
             } catch (err) {
                 console.log('getContractAddress => result :', err);
+                return err;
             }
         },
         'getProvider'() {
@@ -72,6 +85,7 @@ if (Meteor.isServer) {
                 return web3.eth.currentProvider;
             } catch (err) {
                 console.log('getProvider => err :', err);
+                return err;
             }
         },
         'getTransaction'(txAddress) {
@@ -104,6 +118,7 @@ if (Meteor.isServer) {
                 return result;
             } catch (err) {
                 console.log('getAllTransactions => err :', err);
+                return err;
             }
         },
         'getTransactionStatus'(txAddress) {
@@ -133,13 +148,25 @@ if (Meteor.isServer) {
                         gas: gasLimit,
                         gasPrice: gasPrice
                     }).await();
-                var resultRecipe = contract.methods
-                    .setNewRegister(stringHash(_codedData), _codedData, _csv, Date.now())
-                    .send({
-                        from: web3.eth.defaultAccount,
-                        gas: gasLimit,
-                        gasPrice: gasPrice
-                    }).await();
+                var tx_builder = contract.methods.setNewRegister(stringHash(_codedData), _codedData, _csv, Date.now());
+                var encoded_tx = tx_builder.encodeABI();
+                console.log(encoded_tx);
+                var transactionObject = {
+                    gas: gasLimit,
+                    data: encoded_tx,
+                    from: accountAddress,
+                    to: contractAddress
+                }
+                var code = web3.eth.accounts.signTransaction(transactionObject, privateKey).await();
+                console.log(code);
+                var resultRecipe = web3.eth.sendSignedTransaction(code.rawTransaction).await();
+                // var resultRecipe = contract.methods
+                //     .setNewRegister(stringHash(_codedData), _codedData, _csv, Date.now())
+                //     .send({
+                //         from: web3.eth.defaultAccount,
+                //         gas: gasLimit,
+                //         gasPrice: gasPrice
+                //     }).await();
 
 
                 result = { resultData, resultRecipe };
